@@ -19,7 +19,7 @@ public class driver extends JPanel implements ActionListener, KeyListener {
 	
 	int table_width = 800; //width of the screen "table"
 	int table_height = 830;//height of the screen "table"
-	
+	boolean coolDesign = false;
 	
 	//variables for ball
 	int b_s = 20;//size
@@ -44,7 +44,7 @@ public class driver extends JPanel implements ActionListener, KeyListener {
 	
 	
 	//scoring variables
-	int score1=0, score2=0, score3=0; //p1 and p2
+	int score1=0, score2=0; //p1 and p2
 	
 	
 	/*
@@ -53,7 +53,7 @@ public class driver extends JPanel implements ActionListener, KeyListener {
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		
-		
+		Font font1 = new Font ("Courier New", 1, 10);
 		Font font2 = new Font ("Courier New", 1, 50);
 		g.setFont(font2);
 		
@@ -72,39 +72,42 @@ public class driver extends JPanel implements ActionListener, KeyListener {
 		//above that you need to use. DO NOT HARDCODE NUMBERS
 		g.fillRect(p_x,p_y,p_w,p_h);
 		g.fillRect(c_x,c_y,c_w,c_h);
-		//draw the score on the screen		
-		Color myNewBlue = new Color (0, 255, 255);
-		g.setColor(myNewBlue);
-		for(int x1=0,y1=0,x2=800,y2=0; x1<800;x1 +=10,y2 +=7)
-		{
-			g.drawLine(x1,y1,x2,y2);
+
+		if (coolDesign){	
+			Color myNewBlue = new Color (0, 255, 255);
+			g.setColor(myNewBlue);
+			for(int x1=0,y1=0,x2=800,y2=0; x1<800;x1 +=10,y2 +=7)
+			{
+				g.drawLine(x1,y1,x2,y2);
+			}
+			
+			for(int x1=0, y1=800, x2=800, y2=800; x1<800; x1 +=10, y2 -=7)
+			{
+				g.drawLine(x1,y1,x2,y2);
+			}
+			
+			for(int x1=800, y1=0, x2=0, y2=0; x1>0; x1 -=10, y2 +=7)
+			{
+				g.drawLine(x1,y1,x2,y2);
+			}
+			
+			for(int x1=800, y1=800, x2=0, y2=800; x1>0; x1 -=10, y2 -=7)
+			{
+				g.drawLine(x1,y1,x2,y2);
+			}
 		}
-		
-		for(int x1=0, y1=800, x2=800, y2=800; x1<800; x1 +=10, y2 -=7)
-		{
-			g.drawLine(x1,y1,x2,y2);
-		}
-		
-		for(int x1=800, y1=0, x2=0, y2=0; x1>0; x1 -=10, y2 +=7)
-		{
-			g.drawLine(x1,y1,x2,y2);
-		}
-		
-		for(int x1=800, y1=800, x2=0, y2=800; x1>0; x1 -=10, y2 -=7)
-		{
-			g.drawLine(x1,y1,x2,y2);
-		}
+
 		g.setColor(Color.red);
-		g.drawLine(720,265,720,535);
-		g.drawLine(80,265,80,535);
+		g.drawLine(750,0,750,table_height);
+		g.drawLine(50,0,50,table_height);
 		
-		
+		//draw the score on the screen
 		g.setColor(Color.yellow);
 		String s1 = Integer.toString(score1);
 		String s2 = Integer.toString(score2);
 		g.drawString(s1, table_width/4,50);
-		while(b_x+b_s >= 720){
-			score1= score1 + 1;
+		while(b_x+b_s >= 750){
+			score1 = score1 + 1;
 			p_x = table_width*6/8;
 			p_y = (table_height-p_h)/2;
 			c_x= table_width*2/8;
@@ -116,8 +119,8 @@ public class driver extends JPanel implements ActionListener, KeyListener {
 			
 		}
 		g.drawString(s2, table_width*3/4,50);
-		while(b_x+b_s <= 80){
-			score2= score2 + 1;
+		while(b_x+b_s <= 50){
+			score2 = score2 + 1;
 			p_x = table_width*6/8;
 			p_y = (table_height-p_h)/2;
 			c_x= table_width*2/8;
@@ -128,6 +131,12 @@ public class driver extends JPanel implements ActionListener, KeyListener {
 			b_vy=0;
 			
 		}
+
+		g.setFont(font1);
+		g.drawString("W to move up", 55, 790);
+		g.drawString("S to move down", 55, 800);
+		g.drawString("Up arrow to move up", 632, 790);
+		g.drawString("Down arrow to move down", 610, 800);
 		
 		//draw the ball - should be white and a square
 		//before drawing ball, we'll randomize a color for it
@@ -190,52 +199,50 @@ public class driver extends JPanel implements ActionListener, KeyListener {
 			b_vx+=2;
 			b_vy+=2;
 			b_vx*=-1;
-			score3++;
-			
 		}
 		if((b_y>=c_y)&&(b_y+b_s<=c_y+c_h)&&(b_x<=c_x+c_w)&&(b_x+b_s>=c_x)){
 			b_vx*=-1;
 			b_vx+=2;
 			b_vy+=2;
-			score3++;
-			
 		}
+		
+		if (coolDesign){
+			for(int i=10, e=7; i<800; i+=10, e+=7){
 
-	for(int i=10, e=7; i<800; i+=10, e+=7){
+				int x1=800-i, y1=0, x2=0, y2=e;
+				int j1 = (y2-y1)*(b_x-x1)/(x2-x1) + y1;
+				if(b_y<=j1 && b_x<=x1){
+					b_vx*= -1;
+					b_vy*= -1;
+					break;
+				}
+				
+				int x3=i, y3=0, x4=800, y4=e;
+				int j2 = (y4-y3)*(b_x-x3)/(x4-x3) + y3;
+				if(b_y<=j2 && (b_x+b_s)>=x3){
+					b_vx*= -1;
+					b_vy*= -1;
+					break;
+				}
+				
+				int x5=i, y5=800, x6=800, y6=800-e;
+				int j3 = (y6-y5)*(b_x-x5)/(x6-x5) + y5;
+				if((b_y+b_s)>=j3 && (b_x+b_s)>=x5){
+					b_vx*= -1;
+					b_vy*= -1;
+					break;
+				}
 
-		int x1=800-i, y1=0, x2=0, y2=e;
- 		int j1 = (y2-y1)*(b_x-x1)/(x2-x1) + y1;
- 		if(b_y<=j1 && b_x<=x1){
- 			b_vx*= -1;
-			b_vy*= -1;
-			break;
- 		}
- 		
- 		int x3=i, y3=0, x4=800, y4=e;
- 		int j2 = (y4-y3)*(b_x-x3)/(x4-x3) + y3;
- 		if(b_y<=j2 && (b_x+b_s)>=x3){
- 			b_vx*= -1;
-			b_vy*= -1;
-			break;
- 		}
- 		
-		int x5=i, y5=800, x6=800, y6=800-e;
- 		int j3 = (y6-y5)*(b_x-x5)/(x6-x5) + y5;
- 		if((b_y+b_s)>=j3 && (b_x+b_s)>=x5){
- 			b_vx*= -1;
-			b_vy*= -1;
- 			break;
- 		}
-
- 		
- 		int x7=800-i, y7=800, x8=0, y8=800-e;
- 		int j4 = (y8-y7)*(b_x-x7)/(x8-x7) + y7;
- 		if((b_y+b_s)>=j4 && b_x<=x7){
- 			b_vx*= -1;
-			b_vy*= -1;
-			break;
- 		}
-	}
+				
+				int x7=800-i, y7=800, x8=0, y8=800-e;
+				int j4 = (y8-y7)*(b_x-x7)/(x8-x7) + y7;
+				if((b_y+b_s)>=j4 && b_x<=x7){
+					b_vx*= -1;
+					b_vy*= -1;
+					break;
+				}
+			}
+		}
 	
 	}//end of update method - put code above for any updates on variable
 	
@@ -285,10 +292,29 @@ public class driver extends JPanel implements ActionListener, KeyListener {
 			c_y+=50;
 		}
 		if(arg0.getKeyCode()==32){
-			int random= (int)(Math.random()*(6)+5);
-			b_vx=random;
-			b_vy=random;
+			int random= (int)((Math.random()*6)+5);
+			int direction = (int)((Math.random()*4)+1);
+			if (direction == 1){
+				b_vx=random;
+				b_vy=random;
+			} else if (direction == 2){
+				b_vx=random * -1;
+				b_vy=random;
+			} else if (direction == 2){
+				b_vx=random * -1;
+				b_vy=random * -1;
+			} else {
+				b_vx=random;
+				b_vy=random * -1;
+			}
 			
+		}
+		if(arg0.getKeyCode()==67){
+			if (coolDesign){
+				coolDesign = false;
+			} else {
+				coolDesign = true;
+			}
 		}
 	}
 
@@ -301,9 +327,6 @@ public class driver extends JPanel implements ActionListener, KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println(arg0.getKeyCode());
-		
-		
 		
 		
 	}
